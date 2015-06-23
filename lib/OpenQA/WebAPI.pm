@@ -20,6 +20,7 @@ use Mojo::Base 'Mojolicious';
 use OpenQA::Schema::Schema;
 use OpenQA::WebAPI::Plugin::Helpers;
 use OpenQA::IPC;
+use OpenQA::Worker::Common qw/ASSET_DIR/;
 
 use Mojo::IOLoop;
 use Mojolicious::Commands;
@@ -246,6 +247,9 @@ sub startup {
         # it's rather expensive
         db_profiler::enable_sql_debugging($self);
     }
+
+    $ENV{MOJO_TMPDIR} = ASSET_DIR.'/tmp';
+    die "$ENV{MOJO_TMPDIR} must be writeable" unless -w $ENV{MOJO_TMPDIR};
 
     $OpenQA::Utils::app = $self;
 
